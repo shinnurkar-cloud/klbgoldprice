@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalaburagi Gold Price</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Kalaburagi Gold Price</h1>
+        </header>
+
+        <!-- Public Price Display -->
+        <section class="price-display">
+            <div class="price-container">
+                <div class="current-price" id="currentPrice">₹65,000</div>
+                <div class="price-unit">per 10 gm (INR)</div>
+                <div class="last-updated" id="lastUpdated">Last updated: Tuesday, August 12, 2025, 5:00:00 PM</div>
+            </div>
+        </section>
+
+        <!-- Login Section (visible when not logged in) -->
+        <section class="login-section" id="loginSection">
+            <div class="card">
+                <h3>Admin Login</h3>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" id="username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary">Login</button>
+                    <div id="loginError" class="error-message hidden"></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Change Password Section (always visible below login) -->
+        <section class="change-password-section" id="changePasswordSection">
+            <div class="card">
+                <h3>Change Password</h3>
+                <form id="changePasswordForm" class="change-password-form">
+                    <div class="form-group">
+                        <label for="oldPassword" class="form-label">Current Password</label>
+                        <input type="password" id="oldPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" id="newPassword" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn--secondary">Change Password</button>
+                    <div id="changePasswordError" class="error-message hidden"></div>
+                    <div id="changePasswordSuccess" class="success-message hidden"></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Admin Panel (hidden until logged in) -->
+        <section class="admin-panel hidden" id="adminPanel">
+            <div class="card">
+                <h3>Admin Panel</h3>
+                <form id="priceUpdateForm" class="price-update-form">
+                    <div class="form-group">
+                        <label for="newPrice" class="form-label">New Price (₹ per 10 gm)</label>
+                        <input type="number" id="newPrice" class="form-control" step="0.01" min="0" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary">Update Price</button>
+                    <div id="priceUpdateError" class="error-message hidden"></div>
+                    <div id="priceUpdateSuccess" class="success-message hidden"></div>
+                </form>
+                <button id="logoutButton" class="btn btn--outline">Logout</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
