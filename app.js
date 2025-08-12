@@ -1,347 +1,298 @@
-// Kalaburagi Gold Price Tracker Application
-let currentPrice = 65000; // Initial price in INR per 10gm
+// Kalaburagi Gold Price Application
+// All functionality in a single JavaScript file
+
+// Application state variables
+let currentGoldPrice = 65000; // Initial price in rupees
 let isLoggedIn = false;
+const adminUsername = 'admin';
+let currentPassword = 'admin123';
+const masterPassword = 'gold123'; // Never changes
+const minPasswordLength = 6;
 
-// Admin credentials
-const ADMIN_USERNAME = "admin";
-let adminPassword = "admin123"; // This can change
-const MASTER_PASSWORD = "gold123"; // This never changes
-const MIN_PASSWORD_LENGTH = 6;
-
-// Initialize when page loads
+// Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing app');
-    initializeApp();
-});
-
-function initializeApp() {
-    console.log('Starting app initialization');
+    console.log('Kalaburagi Gold Price App initialized');
+    console.log('Admin credentials: username =', adminUsername, ', password =', currentPassword);
     
-    // Update initial timestamp and price
-    updateTimestamp();
-    updatePriceDisplay();
+    // Render initial price
+    renderPrice();
     
     // Set up event listeners
     setupEventListeners();
     
-    // Ensure login form is shown initially
-    showLoginForm();
-    
-    console.log('App initialized successfully');
-}
+    // Set initial UI state
+    updateUIState();
+});
 
 function setupEventListeners() {
-    console.log('Setting up event listeners');
-    
-    // Login form submission
-    const loginForm = document.getElementById('adminLoginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            handleLogin(e);
+    // Login button
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+        loginButton.addEventListener('click', function() {
+            console.log('Login button clicked');
+            handleLogin();
         });
-        console.log('Login form listener attached');
-    } else {
-        console.error('Login form not found');
     }
     
-    // Change password form submission
-    const changePasswordForm = document.getElementById('changePasswordForm');
-    if (changePasswordForm) {
-        changePasswordForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            handlePasswordChange(e);
+    // Change password button
+    const changePasswordButton = document.getElementById('changePasswordButton');
+    if (changePasswordButton) {
+        changePasswordButton.addEventListener('click', function() {
+            console.log('Change password button clicked');
+            handleChangePassword();
         });
-        console.log('Change password form listener attached');
-    } else {
-        console.error('Change password form not found');
     }
     
-    // Price update form submission
-    const priceForm = document.getElementById('priceUpdateForm');
-    if (priceForm) {
-        priceForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            handlePriceUpdate(e);
+    // Price update button
+    const updatePriceButton = document.getElementById('updatePriceButton');
+    if (updatePriceButton) {
+        updatePriceButton.addEventListener('click', function() {
+            console.log('Update price button clicked');
+            handlePriceUpdate();
         });
-        console.log('Price update form listener attached');
     }
     
     // Logout button
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleLogout(e);
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function() {
+            console.log('Logout button clicked');
+            handleLogout();
         });
-        console.log('Logout button listener attached');
     }
+    
+    // Enter key support for login fields
+    const usernameField = document.getElementById('username');
+    const passwordField = document.getElementById('password');
+    if (usernameField && passwordField) {
+        [usernameField, passwordField].forEach(field => {
+            field.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleLogin();
+                }
+            });
+        });
+    }
+    
+    console.log('Event listeners set up');
 }
 
-function handleLogin(e) {
-    console.log('=== LOGIN ATTEMPT ===');
-    
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    const loginError = document.getElementById('loginError');
-    
-    if (!usernameInput || !passwordInput || !loginError) {
-        console.error('Required login elements not found');
-        return false;
+function renderPrice() {
+    // Format price with thousands separator
+    const formattedPrice = '₹' + currentGoldPrice.toLocaleString('en-IN');
+    const currentPriceElement = document.getElementById('currentPrice');
+    if (currentPriceElement) {
+        currentPriceElement.innerText = formattedPrice;
     }
     
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-    
-    console.log('Username:', username);
-    console.log('Password provided:', password ? 'Yes' : 'No');
-    console.log('Expected username:', ADMIN_USERNAME);
-    console.log('Current admin password:', adminPassword);
-    
-    // Clear previous error messages
-    loginError.classList.add('hidden');
-    loginError.textContent = '';
-    
-    // Check credentials
-    if (username === ADMIN_USERNAME && password === adminPassword) {
-        console.log('LOGIN SUCCESS!');
-        isLoggedIn = true;
-        showAdminPanel();
-        clearLoginForm();
-        return true;
-    } else {
-        console.log('LOGIN FAILED - Invalid credentials');
-        loginError.textContent = 'Invalid username or password. Please try again.';
-        loginError.className = 'error-message';
-        loginError.classList.remove('hidden');
-        return false;
+    // Update timestamp
+    const now = new Date();
+    const timestamp = now.toLocaleString('en-IN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    const lastUpdatedElement = document.getElementById('lastUpdated');
+    if (lastUpdatedElement) {
+        lastUpdatedElement.innerText = `Last updated: ${timestamp}`;
     }
+    
+    console.log('Price rendered:', formattedPrice, 'at', timestamp);
 }
 
-function handlePasswordChange(e) {
-    console.log('=== PASSWORD CHANGE ATTEMPT ===');
-    
-    const oldPasswordInput = document.getElementById('oldPassword');
-    const newPasswordInput = document.getElementById('newPassword');
-    const passwordChangeMessage = document.getElementById('passwordChangeMessage');
-    
-    if (!oldPasswordInput || !newPasswordInput || !passwordChangeMessage) {
-        console.error('Required password change elements not found');
-        return;
-    }
-    
-    const oldPassword = oldPasswordInput.value.trim();
-    const newPassword = newPasswordInput.value.trim();
-    
-    console.log('Old password entered:', oldPassword ? 'Yes' : 'No');
-    console.log('New password length:', newPassword.length);
-    console.log('Current admin password:', adminPassword);
-    console.log('Master password:', MASTER_PASSWORD);
-    
-    // Clear previous messages
-    passwordChangeMessage.classList.add('hidden');
-    passwordChangeMessage.textContent = '';
-    passwordChangeMessage.className = '';
-    
-    // Validate new password length
-    if (newPassword.length < MIN_PASSWORD_LENGTH) {
-        console.log('New password too short');
-        passwordChangeMessage.textContent = `New password must be at least ${MIN_PASSWORD_LENGTH} characters long.`;
-        passwordChangeMessage.className = 'error-message';
-        passwordChangeMessage.classList.remove('hidden');
-        return;
-    }
-    
-    // Check if old password matches current password OR master password
-    if (oldPassword === adminPassword || oldPassword === MASTER_PASSWORD) {
-        console.log('PASSWORD CHANGE AUTHORIZED');
-        
-        // Update the admin password
-        adminPassword = newPassword;
-        console.log('New admin password set');
-        
-        // Show success message
-        passwordChangeMessage.textContent = 'Password successfully changed! You can now login with your new password.';
-        passwordChangeMessage.className = 'success-message';
-        passwordChangeMessage.classList.remove('hidden');
-        
-        // Clear the form
-        oldPasswordInput.value = '';
-        newPasswordInput.value = '';
-        
-        // If currently logged in, log them out after a delay
-        if (isLoggedIn) {
-            setTimeout(() => {
-                handleLogout();
-            }, 2000);
-        }
-        
-    } else {
-        console.log('PASSWORD CHANGE FAILED - Invalid old password');
-        passwordChangeMessage.textContent = 'Invalid old password. Use your current password or "gold123" if forgotten.';
-        passwordChangeMessage.className = 'error-message';
-        passwordChangeMessage.classList.remove('hidden');
-    }
-}
-
-function handlePriceUpdate(e) {
-    console.log('=== PRICE UPDATE ATTEMPT ===');
-    
-    const newPriceInput = document.getElementById('newPrice');
-    const updateMessage = document.getElementById('updateMessage');
-    
-    if (!newPriceInput || !updateMessage) {
-        console.error('Required price update elements not found');
-        return;
-    }
-    
-    const newPriceValue = newPriceInput.value.trim();
-    const newPrice = parseFloat(newPriceValue);
-    
-    console.log('New price input:', newPriceValue);
-    console.log('Parsed price:', newPrice);
-    
-    // Clear previous messages
-    updateMessage.classList.add('hidden');
-    updateMessage.textContent = '';
-    updateMessage.className = '';
-    
-    // Validate price
-    if (isNaN(newPrice) || newPrice <= 0) {
-        console.log('Invalid price entered');
-        updateMessage.textContent = 'Please enter a valid positive price in INR.';
-        updateMessage.className = 'error-message';
-        updateMessage.classList.remove('hidden');
-        return;
-    }
-    
-    // CRITICAL: Update the current price
-    console.log('Previous price:', currentPrice);
-    currentPrice = Math.round(newPrice); // Round to nearest rupee
-    console.log('New price set to:', currentPrice);
-    
-    // CRITICAL: Update the main price display immediately
-    updatePriceDisplay();
-    
-    // CRITICAL: Update timestamp immediately  
-    updateTimestamp();
-    
-    console.log('Price and timestamp updated successfully');
-    
-    // Show success message
-    updateMessage.textContent = `Gold price successfully updated to ₹${currentPrice.toLocaleString('en-IN')} per 10gm`;
-    updateMessage.className = 'success-message';
-    updateMessage.classList.remove('hidden');
-    
-    // Clear input
-    newPriceInput.value = '';
-    
-    console.log('=== PRICE UPDATE COMPLETE ===');
-}
-
-function handleLogout(e) {
-    if (e) e.preventDefault();
-    console.log('=== LOGOUT ===');
-    isLoggedIn = false;
-    showLoginForm();
-    clearAdminPanel();
-}
-
-function showAdminPanel() {
-    console.log('Showing admin panel');
-    const loginForm = document.getElementById('loginForm');
+function updateUIState() {
+    const loginSection = document.getElementById('loginSection');
+    const changePasswordSection = document.getElementById('changePasswordSection');
     const adminPanel = document.getElementById('adminPanel');
     
-    if (loginForm && adminPanel) {
-        loginForm.classList.add('hidden');
-        adminPanel.classList.remove('hidden');
-        console.log('Admin panel shown, login form hidden');
+    if (isLoggedIn) {
+        // Hide login and change password sections
+        if (loginSection) loginSection.classList.add('hidden');
+        if (changePasswordSection) changePasswordSection.classList.add('hidden');
+        // Show admin panel
+        if (adminPanel) adminPanel.classList.remove('hidden');
+        console.log('UI updated: Admin view active');
     } else {
-        console.error('Could not find loginForm or adminPanel elements');
-        console.log('loginForm exists:', !!loginForm);
-        console.log('adminPanel exists:', !!adminPanel);
+        // Show login and change password sections
+        if (loginSection) loginSection.classList.remove('hidden');
+        if (changePasswordSection) changePasswordSection.classList.remove('hidden');
+        // Hide admin panel
+        if (adminPanel) adminPanel.classList.add('hidden');
+        console.log('UI updated: Public view active');
     }
 }
 
-function showLoginForm() {
-    console.log('Showing login form');
-    const loginForm = document.getElementById('loginForm');
-    const adminPanel = document.getElementById('adminPanel');
-    
-    if (loginForm && adminPanel) {
-        adminPanel.classList.add('hidden');
-        loginForm.classList.remove('hidden');
-        console.log('Login form shown, admin panel hidden');
-    } else {
-        console.error('Could not find loginForm or adminPanel elements');
-        console.log('loginForm exists:', !!loginForm);
-        console.log('adminPanel exists:', !!adminPanel);
-    }
-}
-
-function clearLoginForm() {
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
+function handleLogin() {
+    const usernameField = document.getElementById('username');
+    const passwordField = document.getElementById('password');
     const loginError = document.getElementById('loginError');
     
-    if (usernameInput) usernameInput.value = '';
-    if (passwordInput) passwordInput.value = '';
+    if (!usernameField || !passwordField) {
+        console.error('Login fields not found');
+        return;
+    }
+    
+    const username = usernameField.value.trim();
+    const password = passwordField.value;
+    
+    console.log('Login attempt - Entered username:', `"${username}"`);
+    console.log('Login attempt - Entered password:', `"${password}"`);
+    console.log('Expected username:', `"${adminUsername}"`);
+    console.log('Expected password:', `"${currentPassword}"`);
+    
+    // Hide previous error
     if (loginError) {
         loginError.classList.add('hidden');
-        loginError.textContent = '';
     }
     
-    console.log('Login form cleared');
-}
-
-function clearAdminPanel() {
-    const newPriceInput = document.getElementById('newPrice');
-    const updateMessage = document.getElementById('updateMessage');
-    
-    if (newPriceInput) newPriceInput.value = '';
-    if (updateMessage) {
-        updateMessage.classList.add('hidden');
-        updateMessage.textContent = '';
-        updateMessage.className = '';
-    }
-    
-    console.log('Admin panel cleared');
-}
-
-function updatePriceDisplay() {
-    console.log('=== UPDATING PRICE DISPLAY ===');
-    const priceElement = document.getElementById('currentPrice');
-    if (priceElement) {
-        const formattedPrice = `₹${currentPrice.toLocaleString('en-IN')}`;
-        priceElement.textContent = formattedPrice;
-        console.log('Price display updated to:', formattedPrice);
-        console.log('Price element content is now:', priceElement.textContent);
-    } else {
-        console.error('Price element with ID "currentPrice" not found!');
-    }
-    console.log('=== PRICE DISPLAY UPDATE COMPLETE ===');
-}
-
-function updateTimestamp() {
-    console.log('=== UPDATING TIMESTAMP ===');
-    const timestampElement = document.getElementById('lastUpdated');
-    if (timestampElement) {
-        const now = new Date();
-        const options = {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: 'Asia/Kolkata'
-        };
+    // Check credentials
+    if (username === adminUsername && password === currentPassword) {
+        isLoggedIn = true;
         
-        const formattedTime = now.toLocaleDateString('en-IN', options) + ' IST';
-        timestampElement.textContent = formattedTime;
-        console.log('Timestamp updated to:', formattedTime);
-        console.log('Timestamp element content is now:', timestampElement.textContent);
+        // Clear login fields
+        usernameField.value = '';
+        passwordField.value = '';
+        
+        // Update UI to show admin panel
+        updateUIState();
+        
+        console.log('✅ Login successful for user:', username);
     } else {
-        console.error('Timestamp element with ID "lastUpdated" not found!');
+        // Show error message
+        if (loginError) {
+            loginError.innerText = 'Invalid username or password';
+            loginError.classList.remove('hidden');
+        }
+        console.log('❌ Login failed');
+        console.log('Username match:', username === adminUsername);
+        console.log('Password match:', password === currentPassword);
     }
-    console.log('=== TIMESTAMP UPDATE COMPLETE ===');
+}
+
+function handleLogout() {
+    isLoggedIn = false;
+    
+    // Clear all form fields
+    const fields = ['username', 'password', 'newPrice', 'oldPassword', 'newPassword'];
+    fields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) field.value = '';
+    });
+    
+    // Hide all messages
+    hideAllMessages();
+    
+    // Update UI to show public view
+    updateUIState();
+    
+    console.log('✅ User logged out successfully');
+}
+
+function handleChangePassword() {
+    const oldPasswordField = document.getElementById('oldPassword');
+    const newPasswordField = document.getElementById('newPassword');
+    const changePasswordError = document.getElementById('changePasswordError');
+    const changePasswordSuccess = document.getElementById('changePasswordSuccess');
+    
+    if (!oldPasswordField || !newPasswordField) {
+        console.error('Password change fields not found');
+        return;
+    }
+    
+    const oldPassword = oldPasswordField.value;
+    const newPassword = newPasswordField.value;
+    
+    // Hide previous messages
+    if (changePasswordError) changePasswordError.classList.add('hidden');
+    if (changePasswordSuccess) changePasswordSuccess.classList.add('hidden');
+    
+    // Validate old password (must match current password OR master password)
+    if (oldPassword !== currentPassword && oldPassword !== masterPassword) {
+        if (changePasswordError) {
+            changePasswordError.innerText = 'Invalid current password';
+            changePasswordError.classList.remove('hidden');
+        }
+        console.log('❌ Password change failed: Invalid current password');
+        return;
+    }
+    
+    // Validate new password length
+    if (newPassword.length < minPasswordLength) {
+        if (changePasswordError) {
+            changePasswordError.innerText = `New password must be at least ${minPasswordLength} characters long`;
+            changePasswordError.classList.remove('hidden');
+        }
+        console.log('❌ Password change failed: Password too short');
+        return;
+    }
+    
+    // Update password
+    currentPassword = newPassword;
+    if (changePasswordSuccess) {
+        changePasswordSuccess.innerText = 'Password changed successfully';
+        changePasswordSuccess.classList.remove('hidden');
+    }
+    
+    // Clear form fields
+    oldPasswordField.value = '';
+    newPasswordField.value = '';
+    
+    console.log('✅ Password changed successfully');
+}
+
+function handlePriceUpdate() {
+    const newPriceInput = document.getElementById('newPrice');
+    const priceUpdateError = document.getElementById('priceUpdateError');
+    const priceUpdateSuccess = document.getElementById('priceUpdateSuccess');
+    
+    if (!newPriceInput) {
+        console.error('New price input not found');
+        return;
+    }
+    
+    const newPriceValue = parseFloat(newPriceInput.value);
+    
+    // Hide previous messages
+    if (priceUpdateError) priceUpdateError.classList.add('hidden');
+    if (priceUpdateSuccess) priceUpdateSuccess.classList.add('hidden');
+    
+    // Validate new price
+    if (isNaN(newPriceValue) || newPriceValue <= 0) {
+        if (priceUpdateError) {
+            priceUpdateError.innerText = 'Please enter a valid price greater than 0';
+            priceUpdateError.classList.remove('hidden');
+        }
+        console.log('❌ Price update failed: Invalid price value');
+        return;
+    }
+    
+    // Update price
+    const oldPrice = currentGoldPrice;
+    currentGoldPrice = newPriceValue;
+    
+    // Render updated price immediately
+    renderPrice();
+    
+    // Show success message
+    if (priceUpdateSuccess) {
+        priceUpdateSuccess.innerText = 'Price updated successfully';
+        priceUpdateSuccess.classList.remove('hidden');
+    }
+    
+    // Clear form
+    newPriceInput.value = '';
+    
+    console.log('✅ Price updated successfully from ₹' + oldPrice.toLocaleString('en-IN') + ' to ₹' + currentGoldPrice.toLocaleString('en-IN'));
+}
+
+function hideAllMessages() {
+    const messageIds = ['loginError', 'changePasswordError', 'changePasswordSuccess', 'priceUpdateError', 'priceUpdateSuccess'];
+    messageIds.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.classList.add('hidden');
+    });
 }

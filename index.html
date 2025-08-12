@@ -4,108 +4,606 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalaburagi Gold Price</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --color-primary: #D4AF37;
+            --color-primary-dark: #B8941F;
+            --color-background: #FFFEF7;
+            --color-surface: #FFFFFF;
+            --color-text: #2C2C2C;
+            --color-text-secondary: #666666;
+            --color-error: #DC3545;
+            --color-success: #28A745;
+            --color-border: rgba(212, 175, 55, 0.3);
+            --color-gold-light: #F5F5DC;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 24px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+            border-radius: var(--radius);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .price-display {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 32px 24px;
+            background: var(--color-surface);
+            border: 3px solid var(--color-primary);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+        }
+
+        #publicPrice {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .price-unit {
+            font-size: 1.2rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        #publicTimestamp {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card h3 {
+            color: var(--color-primary);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: var(--color-gold-light);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn {
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            margin-right: 12px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: var(--radius);
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--color-error);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .success-message {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--color-success);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .admin-panel {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid var(--color-primary);
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            #publicPrice {
+                font-size: 2.5rem;
+            }
+            
+            .price-display {
+                padding: 24px 16px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <!-- Main Header -->
+        <!-- Header -->
         <header class="header">
-            <h1 class="header__title">Kalaburagi Gold Price</h1>
-            <p class="header__subtitle">Live Market Data</p>
+            <h1>Kalaburagi Gold Price</h1>
         </header>
 
-        <!-- Main Price Display -->
+        <!-- Public Price Display -->
         <section class="price-display">
-            <div class="price-card">
-                <div class="price-card__label">Current Gold Price</div>
-                <div class="price-card__value" id="currentPrice">₹65,000</div>
-                <div class="price-card__unit">per 10gm (INR)</div>
-                <div class="price-card__updated">
-                    Last updated: <span id="lastUpdated">Loading...</span>
+            <div id="publicPrice">₹65,000</div>
+            <div class="price-unit">per 10 gm (INR)</div>
+            <div id="publicTimestamp">Last updated: Loading...</div>
+        </section>
+
+        <!-- Login Section -->
+        <section id="loginSection">
+            <div class="card">
+                <h3>Admin Login</h3>
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="username" class="form-control" autocomplete="username">
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" autocomplete="current-password">
+                </div>
+                <button class="btn" onclick="handleLogin()">Login</button>
+                <div id="loginError" class="message error-message hidden"></div>
             </div>
         </section>
 
-        <!-- Admin Section -->
-        <section class="admin-section">
-            <!-- Login Form -->
-            <div class="admin-login" id="loginForm">
-                <div class="card">
-                    <div class="card__header">
-                        <h3>Admin Login</h3>
-                    </div>
-                    <div class="card__body">
-                        <form id="adminLoginForm">
-                            <div class="form-group">
-                                <label class="form-label" for="username">Username</label>
-                                <input type="text" class="form-control" id="username" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="password">Password</label>
-                                <input type="password" class="form-control" id="password" required>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn--primary btn--full-width">Login</button>
-                            </div>
-                            <div id="loginError" class="error-message hidden"></div>
-                        </form>
-                    </div>
+        <!-- Change Password Section -->
+        <section id="changePasswordSection">
+            <div class="card">
+                <h3>Change Password</h3>
+                <div class="form-group">
+                    <label class="form-label">Current Password (or Master Password)</label>
+                    <input type="password" id="oldPassword" class="form-control">
                 </div>
-
-                <!-- Change Password Form -->
-                <div class="card change-password-card">
-                    <div class="card__header">
-                        <h3>Change Password</h3>
-                    </div>
-                    <div class="card__body">
-                        <form id="changePasswordForm">
-                            <div class="form-group">
-                                <label class="form-label" for="oldPassword">Old Password</label>
-                                <input type="password" class="form-control" id="oldPassword" placeholder="Enter current or master password" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="newPassword">New Password</label>
-                                <input type="password" class="form-control" id="newPassword" placeholder="Minimum 6 characters" required>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn--secondary btn--full-width">Change Password</button>
-                            </div>
-                            <div id="passwordChangeMessage" class="hidden"></div>
-                            <div class="password-hint">
-                                <small>Tip: If you forgot your password, use "gold123" as the old password</small>
-                            </div>
-                        </form>
-                    </div>
+                <div class="form-group">
+                    <label class="form-label">New Password (min 6 chars)</label>
+                    <input type="password" id="newPassword" class="form-control">
                 </div>
+                <button class="btn" onclick="handleChangePassword()">Change Password</button>
+                <div id="changePasswordError" class="message error-message hidden"></div>
+                <div id="changePasswordSuccess" class="message success-message hidden"></div>
             </div>
+        </section>
 
-            <!-- Admin Panel -->
-            <div class="admin-panel hidden" id="adminPanel">
-                <div class="card">
-                    <div class="card__header">
-                        <div class="flex justify-between items-center">
-                            <h3>Admin Panel</h3>
-                            <button class="btn btn--outline btn--sm" id="logoutBtn">Logout</button>
-                        </div>
-                    </div>
-                    <div class="card__body">
-                        <form id="priceUpdateForm">
-                            <div class="form-group">
-                                <label class="form-label" for="newPrice">New Gold Price (INR per 10gm)</label>
-                                <input type="number" class="form-control" id="newPrice" 
-                                       placeholder="Enter price per 10gm in INR" step="1" min="0" required>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn--primary btn--full-width">Update Price</button>
-                            </div>
-                            <div id="updateMessage" class="hidden"></div>
-                        </form>
-                    </div>
+        <!-- Admin Panel -->
+        <section id="adminPanel" class="hidden">
+            <div class="card admin-panel">
+                <h3>Admin Panel</h3>
+                <div class="form-group">
+                    <label class="form-label">New Price (₹ per 10 gm)</label>
+                    <input type="number" id="newPrice" class="form-control" step="0.01" min="0">
                 </div>
+                <button class="btn" onclick="handlePriceUpdate()">Update Price</button>
+                <div id="priceUpdateError" class="message error-message hidden"></div>
+                <div id="priceUpdateSuccess" class="message success-message hidden"></div>
+                <br>
+                <button class="btn btn-outline" onclick="handleLogout()">Logout</button>
             </div>
         </section>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        // Global application state
+        let currentPrice = 65000;
+        let isLoggedIn = false;
+        let adminPassword = 'admin123'; // Stored in RAM only
+        const ADMIN_USERNAME = 'admin';
+        const MASTER_PASSWORD = 'gold123';
+        const MIN_PASSWORD_LENGTH = 6;
+        const STORAGE_KEY = 'kalaburagiGoldPrice';
+
+        console.log('=== Kalaburagi Gold Price App Started ===');
+        console.log('Initial admin credentials: username="admin", password="admin123"');
+        console.log('Master password for password changes: "gold123"');
+        console.log('Storage key:', STORAGE_KEY);
+
+        // Initialize app on page load
+        function initializeApp() {
+            console.log('Initializing application...');
+            
+            // Try to load price from localStorage
+            const savedPrice = localStorage.getItem(STORAGE_KEY);
+            console.log('Checking localStorage for saved price...');
+            
+            if (savedPrice && !isNaN(parseFloat(savedPrice))) {
+                currentPrice = parseFloat(savedPrice);
+                console.log('✅ Price loaded from localStorage:', currentPrice);
+            } else {
+                console.log('⚠️ No valid saved price found, using default:', currentPrice);
+                // Save default price to localStorage
+                localStorage.setItem(STORAGE_KEY, currentPrice.toString());
+                console.log('💾 Default price saved to localStorage');
+            }
+            
+            updatePublicDisplay();
+            updateUIState();
+            setupKeyboardListeners();
+            
+            console.log('✅ Application initialized successfully');
+        }
+
+        function updatePublicDisplay() {
+            console.log('Updating public display with price:', currentPrice);
+            
+            const priceElement = document.getElementById('publicPrice');
+            const timestampElement = document.getElementById('publicTimestamp');
+            
+            // Format price with Indian number formatting
+            const formattedPrice = '₹' + currentPrice.toLocaleString('en-IN');
+            priceElement.textContent = formattedPrice;
+            
+            // Update timestamp
+            const now = new Date();
+            const timestamp = now.toLocaleString('en-IN', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            timestampElement.textContent = `Last updated: ${timestamp}`;
+            
+            console.log('✅ Public display updated:', formattedPrice, 'at', timestamp);
+        }
+
+        function updateUIState() {
+            const loginSection = document.getElementById('loginSection');
+            const changePasswordSection = document.getElementById('changePasswordSection');
+            const adminPanel = document.getElementById('adminPanel');
+            
+            console.log('Updating UI state. isLoggedIn:', isLoggedIn);
+            
+            if (isLoggedIn) {
+                console.log('Hiding login sections, showing admin panel');
+                loginSection.classList.add('hidden');
+                changePasswordSection.classList.add('hidden');
+                adminPanel.classList.remove('hidden');
+                console.log('✅ Admin panel should now be visible');
+            } else {
+                console.log('Showing login sections, hiding admin panel');
+                loginSection.classList.remove('hidden');
+                changePasswordSection.classList.remove('hidden');
+                adminPanel.classList.add('hidden');
+                console.log('✅ Public view should now be visible');
+            }
+        }
+
+        function setupKeyboardListeners() {
+            // Enter key support for login
+            const usernameField = document.getElementById('username');
+            const passwordField = document.getElementById('password');
+            
+            if (usernameField) {
+                usernameField.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        console.log('Enter pressed in username field');
+                        handleLogin();
+                    }
+                });
+            }
+            
+            if (passwordField) {
+                passwordField.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        console.log('Enter pressed in password field');
+                        handleLogin();
+                    }
+                });
+            }
+            
+            console.log('✅ Keyboard listeners set up');
+        }
+
+        function handleLogin() {
+            console.log('=== LOGIN ATTEMPT ===');
+            
+            const usernameField = document.getElementById('username');
+            const passwordField = document.getElementById('password');
+            const errorElement = document.getElementById('loginError');
+            
+            if (!usernameField || !passwordField) {
+                console.error('Login fields not found!');
+                return;
+            }
+            
+            const username = usernameField.value.trim();
+            const password = passwordField.value;
+            
+            console.log('Entered username:', JSON.stringify(username));
+            console.log('Entered password:', JSON.stringify(password));
+            console.log('Expected username:', JSON.stringify(ADMIN_USERNAME));
+            console.log('Expected password:', JSON.stringify(adminPassword));
+            
+            // Hide previous errors
+            hideMessage(errorElement);
+            
+            // Validate credentials
+            if (username === ADMIN_USERNAME && password === adminPassword) {
+                console.log('✅ LOGIN SUCCESSFUL');
+                isLoggedIn = true;
+                
+                // Clear form
+                usernameField.value = '';
+                passwordField.value = '';
+                
+                updateUIState();
+                showMessage(document.getElementById('priceUpdateSuccess'), 'Logged in successfully!', 'success');
+            } else {
+                console.log('❌ LOGIN FAILED');
+                console.log('Username match:', username === ADMIN_USERNAME);
+                console.log('Password match:', password === adminPassword);
+                
+                showMessage(errorElement, 'Invalid username or password', 'error');
+            }
+        }
+
+        function handleLogout() {
+            console.log('=== LOGOUT ===');
+            
+            isLoggedIn = false;
+            
+            // Clear all form fields
+            const fieldIds = ['username', 'password', 'oldPassword', 'newPassword', 'newPrice'];
+            fieldIds.forEach(id => {
+                const field = document.getElementById(id);
+                if (field) field.value = '';
+            });
+            
+            // Hide all messages
+            hideAllMessages();
+            
+            updateUIState();
+            console.log('✅ Logout successful');
+        }
+
+        function handleChangePassword() {
+            console.log('=== PASSWORD CHANGE ATTEMPT ===');
+            
+            const oldPasswordField = document.getElementById('oldPassword');
+            const newPasswordField = document.getElementById('newPassword');
+            const errorElement = document.getElementById('changePasswordError');
+            const successElement = document.getElementById('changePasswordSuccess');
+            
+            if (!oldPasswordField || !newPasswordField) {
+                console.error('Password change fields not found!');
+                return;
+            }
+            
+            const oldPassword = oldPasswordField.value;
+            const newPassword = newPasswordField.value;
+            
+            console.log('Old password entered:', JSON.stringify(oldPassword));
+            console.log('New password length:', newPassword.length);
+            console.log('Current admin password:', JSON.stringify(adminPassword));
+            console.log('Master password:', JSON.stringify(MASTER_PASSWORD));
+            
+            // Hide previous messages
+            hideMessage(errorElement);
+            hideMessage(successElement);
+            
+            // Validate old password (current OR master password)
+            const validOldPassword = (oldPassword === adminPassword) || (oldPassword === MASTER_PASSWORD);
+            
+            if (!validOldPassword) {
+                console.log('❌ Invalid old password');
+                showMessage(errorElement, 'Invalid current password or master password', 'error');
+                return;
+            }
+            
+            // Validate new password length
+            if (newPassword.length < MIN_PASSWORD_LENGTH) {
+                console.log('❌ New password too short');
+                showMessage(errorElement, `New password must be at least ${MIN_PASSWORD_LENGTH} characters`, 'error');
+                return;
+            }
+            
+            // Update password (in RAM only)
+            const oldAdminPassword = adminPassword;
+            adminPassword = newPassword;
+            
+            console.log('✅ PASSWORD CHANGED SUCCESSFULLY');
+            console.log('Old password:', JSON.stringify(oldAdminPassword));
+            console.log('New password:', JSON.stringify(adminPassword));
+            
+            // Clear form
+            oldPasswordField.value = '';
+            newPasswordField.value = '';
+            
+            showMessage(successElement, 'Password changed successfully! (Not persisted across page reloads)', 'success');
+        }
+
+        function handlePriceUpdate() {
+            console.log('=== PRICE UPDATE ATTEMPT ===');
+            
+            const newPriceInput = document.getElementById('newPrice');
+            const errorElement = document.getElementById('priceUpdateError');
+            const successElement = document.getElementById('priceUpdateSuccess');
+            
+            if (!newPriceInput) {
+                console.error('New price input not found!');
+                return;
+            }
+            
+            const newPriceValue = parseFloat(newPriceInput.value);
+            
+            console.log('New price entered:', newPriceInput.value);
+            console.log('Parsed new price:', newPriceValue);
+            console.log('Current price:', currentPrice);
+            
+            // Hide previous messages
+            hideMessage(errorElement);
+            hideMessage(successElement);
+            
+            // Validate price
+            if (isNaN(newPriceValue) || newPriceValue <= 0) {
+                console.log('❌ Invalid price value');
+                showMessage(errorElement, 'Please enter a valid price greater than 0', 'error');
+                return;
+            }
+            
+            // Update global currentPrice
+            const oldPrice = currentPrice;
+            currentPrice = newPriceValue;
+            
+            console.log('✅ PRICE UPDATED');
+            console.log('Old price:', oldPrice);
+            console.log('New price:', currentPrice);
+            
+            // Save to localStorage
+            localStorage.setItem(STORAGE_KEY, currentPrice.toString());
+            console.log('💾 Price saved to localStorage:', STORAGE_KEY, '=', currentPrice);
+            
+            // Update public display immediately
+            updatePublicDisplay();
+            
+            // Clear form and show success
+            newPriceInput.value = '';
+            showMessage(successElement, `Price updated from ₹${oldPrice.toLocaleString('en-IN')} to ₹${currentPrice.toLocaleString('en-IN')}`, 'success');
+        }
+
+        function showMessage(element, message, type) {
+            if (element) {
+                element.textContent = message;
+                element.classList.remove('hidden');
+                console.log(`📢 ${type.toUpperCase()} message shown:`, message);
+            }
+        }
+
+        function hideMessage(element) {
+            if (element) {
+                element.classList.add('hidden');
+            }
+        }
+
+        function hideAllMessages() {
+            const messageIds = ['loginError', 'changePasswordError', 'changePasswordSuccess', 'priceUpdateError', 'priceUpdateSuccess'];
+            messageIds.forEach(id => {
+                const element = document.getElementById(id);
+                hideMessage(element);
+            });
+            console.log('🔇 All messages hidden');
+        }
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded - starting initialization');
+            initializeApp();
+        });
+
+        // Enhanced localStorage logging
+        const originalSetItem = localStorage.setItem;
+        const originalGetItem = localStorage.getItem;
+        
+        localStorage.setItem = function(key, value) {
+            console.log('📝 localStorage.setItem:', key, '=', value);
+            return originalSetItem.call(this, key, value);
+        };
+        
+        localStorage.getItem = function(key) {
+            const value = originalGetItem.call(this, key);
+            console.log('📖 localStorage.getItem:', key, '=', value);
+            return value;
+        };
+
+        console.log('🚀 All JavaScript loaded and ready');
+    </script>
 </body>
 </html>

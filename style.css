@@ -738,227 +738,144 @@ select.form-control {
 }
 
 /* END PERPLEXITY DESIGN SYSTEM */
-/* Additional styles for the gold price tracker application */
+/* Additional styles for the gold price application */
 
-.header {
-  text-align: center;
-  padding: var(--space-32) 0;
-  background: var(--color-bg-2);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-32);
+body {
+  background-color: var(--color-background);
+  min-height: 100vh;
+  padding: var(--space-20) 0;
 }
 
-.header__title {
-  font-size: var(--font-size-4xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text);
-  margin-bottom: var(--space-8);
-}
-
-.header__subtitle {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-/* Price Display Section */
-.price-display {
-  display: flex;
-  justify-content: center;
-  margin-bottom: var(--space-32);
-}
-
-.price-card {
-  background: var(--color-surface);
-  border: 2px solid var(--color-primary);
-  border-radius: var(--radius-lg);
-  padding: var(--space-32);
-  text-align: center;
-  box-shadow: var(--shadow-lg);
-  max-width: 400px;
-  width: 100%;
-}
-
-.price-card__label {
-  font-size: var(--font-size-lg);
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-medium);
-  margin-bottom: var(--space-16);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.price-card__value {
-  font-size: 3.5rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  margin-bottom: var(--space-8);
-  line-height: 1;
-}
-
-.price-card__unit {
-  font-size: var(--font-size-md);
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-16);
-}
-
-.price-card__updated {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  font-style: italic;
-}
-
-/* Admin Section */
-.admin-section {
-  max-width: 500px;
+.container {
+  max-width: 600px;
   margin: 0 auto;
 }
 
-.admin-login {
-  animation: fadeIn 0.3s ease-in;
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: var(--space-32);
 }
 
-.admin-panel {
-  animation: fadeIn 0.3s ease-in;
+.header h1 {
+  color: var(--color-primary);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
 }
 
-/* Change Password Section */
-.change-password-card {
-  margin-top: var(--space-24);
-  background: var(--color-bg-6);
-  border: 1px solid var(--color-card-border);
+/* Price Display */
+.price-display {
+  text-align: center;
+  margin-bottom: var(--space-32);
+  padding: var(--space-24);
+  background: var(--color-bg-2);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-primary);
 }
 
-.change-password-card .card__header {
-  background: rgba(var(--color-brown-600-rgb), 0.08);
-  border-bottom: 1px solid var(--color-card-border-inner);
+.price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
 }
 
-.change-password-card .card__header h3 {
-  color: var(--color-text);
+.current-price {
+  font-size: 3rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.price-unit {
   font-size: var(--font-size-lg);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
 }
 
-.password-hint {
+.last-updated {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
   margin-top: var(--space-8);
 }
 
-.password-hint small {
-  color: var(--color-text-secondary);
-  font-style: italic;
-  font-size: var(--font-size-xs);
+/* Forms and sections */
+.login-section,
+.change-password-section,
+.admin-panel {
+  margin-bottom: var(--space-24);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.login-form,
+.change-password-form,
+.price-update-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
 }
 
-/* Message styles */
+.card h3 {
+  color: var(--color-text);
+  margin-bottom: var(--space-16);
+  font-size: var(--font-size-xl);
+}
+
+/* Messages */
 .error-message {
-  background-color: rgba(var(--color-error-rgb), var(--status-bg-opacity));
+  background-color: rgba(var(--color-error-rgb), 0.1);
   color: var(--color-error);
-  border: 1px solid rgba(var(--color-error-rgb), var(--status-border-opacity));
   padding: var(--space-8) var(--space-12);
   border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
+  border: 1px solid rgba(var(--color-error-rgb), 0.2);
   margin-top: var(--space-8);
+  font-size: var(--font-size-sm);
 }
 
 .success-message {
-  background-color: rgba(var(--color-success-rgb), var(--status-bg-opacity));
+  background-color: rgba(var(--color-success-rgb), 0.1);
   color: var(--color-success);
-  border: 1px solid rgba(var(--color-success-rgb), var(--status-border-opacity));
   padding: var(--space-8) var(--space-12);
   border-radius: var(--radius-sm);
-  font-size: var(--font-size-sm);
+  border: 1px solid rgba(var(--color-success-rgb), 0.2);
   margin-top: var(--space-8);
+  font-size: var(--font-size-sm);
 }
 
-/* Form enhancements */
-.form-control:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-focus-ring);
+/* Admin panel specific styles */
+.admin-panel .card {
+  background: var(--color-bg-3);
 }
 
-/* Button enhancements */
-.btn--secondary {
-  background: var(--color-bg-2);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-}
-
-.btn--secondary:hover {
-  background: var(--color-secondary-hover);
-}
-
-.btn--secondary:active {
-  background: var(--color-secondary-active);
+#logoutButton {
+  margin-top: var(--space-16);
+  align-self: flex-start;
 }
 
 /* Responsive design */
 @media (max-width: 640px) {
   .container {
-    padding: var(--space-16) var(--space-12);
+    padding: 0 var(--space-16);
   }
   
-  .header {
-    padding: var(--space-24) 0;
-    margin-bottom: var(--space-24);
-  }
-  
-  .header__title {
-    font-size: var(--font-size-3xl);
-  }
-  
-  .price-card {
-    padding: var(--space-24);
-  }
-  
-  .price-card__value {
+  .current-price {
     font-size: 2.5rem;
   }
   
-  .admin-section {
-    max-width: none;
+  .header h1 {
+    font-size: var(--font-size-3xl);
   }
   
-  .change-password-card {
-    margin-top: var(--space-16);
+  .price-display {
+    padding: var(--space-16);
   }
 }
 
-/* Loading state */
-.loading {
-  opacity: 0.7;
-  pointer-events: none;
+/* Utility classes for show/hide */
+.hidden {
+  display: none !important;
 }
 
-/* Utility classes */
-.text-center {
-  text-align: center;
-}
-
-.fade-in {
-  animation: fadeIn 0.3s ease-in;
-}
-
-/* Gold theme enhancements */
-.price-card {
-  background: var(--color-bg-2);
-  border-color: var(--color-warning);
-}
-
-.price-card__value {
-  color: var(--color-warning);
-}
-
-.header {
-  background: var(--color-bg-2);
+.visible {
+  display: block !important;
 }
