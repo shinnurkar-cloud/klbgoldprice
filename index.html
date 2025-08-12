@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalaburagi Gold Price</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Main Header -->
+        <header class="header">
+            <h1 class="header__title">Kalaburagi Gold Price</h1>
+            <p class="header__subtitle">Live Market Data</p>
+        </header>
+
+        <!-- Main Price Display -->
+        <section class="price-display">
+            <div class="price-card">
+                <div class="price-card__label">Current Gold Price</div>
+                <div class="price-card__value" id="currentPrice">₹65,000</div>
+                <div class="price-card__unit">per 10gm (INR)</div>
+                <div class="price-card__updated">
+                    Last updated: <span id="lastUpdated">Loading...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Section -->
+        <section class="admin-section">
+            <!-- Login Form -->
+            <div class="admin-login" id="loginForm">
+                <div class="card">
+                    <div class="card__header">
+                        <h3>Admin Login</h3>
+                    </div>
+                    <div class="card__body">
+                        <form id="adminLoginForm">
+                            <div class="form-group">
+                                <label class="form-label" for="username">Username</label>
+                                <input type="text" class="form-control" id="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="password">Password</label>
+                                <input type="password" class="form-control" id="password" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                            </div>
+                            <div id="loginError" class="error-message hidden"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Change Password Form -->
+                <div class="card change-password-card">
+                    <div class="card__header">
+                        <h3>Change Password</h3>
+                    </div>
+                    <div class="card__body">
+                        <form id="changePasswordForm">
+                            <div class="form-group">
+                                <label class="form-label" for="oldPassword">Old Password</label>
+                                <input type="password" class="form-control" id="oldPassword" placeholder="Enter current or master password" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="newPassword">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" placeholder="Minimum 6 characters" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn--secondary btn--full-width">Change Password</button>
+                            </div>
+                            <div id="passwordChangeMessage" class="hidden"></div>
+                            <div class="password-hint">
+                                <small>Tip: If you forgot your password, use "gold123" as the old password</small>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel -->
+            <div class="admin-panel hidden" id="adminPanel">
+                <div class="card">
+                    <div class="card__header">
+                        <div class="flex justify-between items-center">
+                            <h3>Admin Panel</h3>
+                            <button class="btn btn--outline btn--sm" id="logoutBtn">Logout</button>
+                        </div>
+                    </div>
+                    <div class="card__body">
+                        <form id="priceUpdateForm">
+                            <div class="form-group">
+                                <label class="form-label" for="newPrice">New Gold Price (INR per 10gm)</label>
+                                <input type="number" class="form-control" id="newPrice" 
+                                       placeholder="Enter price per 10gm in INR" step="1" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn--primary btn--full-width">Update Price</button>
+                            </div>
+                            <div id="updateMessage" class="hidden"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
