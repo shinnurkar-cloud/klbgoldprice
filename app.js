@@ -36,7 +36,10 @@ function setupEventListeners() {
     // Login form submission
     const loginForm = document.getElementById('adminLoginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', handleLogin);
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handleLogin(e);
+        });
         console.log('Login form listener attached');
     } else {
         console.error('Login form not found');
@@ -45,7 +48,10 @@ function setupEventListeners() {
     // Change password form submission
     const changePasswordForm = document.getElementById('changePasswordForm');
     if (changePasswordForm) {
-        changePasswordForm.addEventListener('submit', handlePasswordChange);
+        changePasswordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handlePasswordChange(e);
+        });
         console.log('Change password form listener attached');
     } else {
         console.error('Change password form not found');
@@ -54,20 +60,25 @@ function setupEventListeners() {
     // Price update form submission
     const priceForm = document.getElementById('priceUpdateForm');
     if (priceForm) {
-        priceForm.addEventListener('submit', handlePriceUpdate);
+        priceForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            handlePriceUpdate(e);
+        });
         console.log('Price update form listener attached');
     }
     
     // Logout button
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogout(e);
+        });
         console.log('Logout button listener attached');
     }
 }
 
 function handleLogin(e) {
-    e.preventDefault();
     console.log('=== LOGIN ATTEMPT ===');
     
     const usernameInput = document.getElementById('username');
@@ -76,14 +87,14 @@ function handleLogin(e) {
     
     if (!usernameInput || !passwordInput || !loginError) {
         console.error('Required login elements not found');
-        return;
+        return false;
     }
     
     const username = usernameInput.value.trim();
     const password = passwordInput.value.trim();
     
     console.log('Username:', username);
-    console.log('Password length:', password.length);
+    console.log('Password provided:', password ? 'Yes' : 'No');
     console.log('Expected username:', ADMIN_USERNAME);
     console.log('Current admin password:', adminPassword);
     
@@ -97,16 +108,17 @@ function handleLogin(e) {
         isLoggedIn = true;
         showAdminPanel();
         clearLoginForm();
+        return true;
     } else {
         console.log('LOGIN FAILED - Invalid credentials');
         loginError.textContent = 'Invalid username or password. Please try again.';
         loginError.className = 'error-message';
         loginError.classList.remove('hidden');
+        return false;
     }
 }
 
 function handlePasswordChange(e) {
-    e.preventDefault();
     console.log('=== PASSWORD CHANGE ATTEMPT ===');
     
     const oldPasswordInput = document.getElementById('oldPassword');
@@ -121,7 +133,7 @@ function handlePasswordChange(e) {
     const oldPassword = oldPasswordInput.value.trim();
     const newPassword = newPasswordInput.value.trim();
     
-    console.log('Old password entered:', oldPassword.length > 0 ? '[PASSWORD ENTERED]' : '[NO PASSWORD]');
+    console.log('Old password entered:', oldPassword ? 'Yes' : 'No');
     console.log('New password length:', newPassword.length);
     console.log('Current admin password:', adminPassword);
     console.log('Master password:', MASTER_PASSWORD);
@@ -129,6 +141,7 @@ function handlePasswordChange(e) {
     // Clear previous messages
     passwordChangeMessage.classList.add('hidden');
     passwordChangeMessage.textContent = '';
+    passwordChangeMessage.className = '';
     
     // Validate new password length
     if (newPassword.length < MIN_PASSWORD_LENGTH) {
@@ -145,7 +158,7 @@ function handlePasswordChange(e) {
         
         // Update the admin password
         adminPassword = newPassword;
-        console.log('New admin password set to:', adminPassword);
+        console.log('New admin password set');
         
         // Show success message
         passwordChangeMessage.textContent = 'Password successfully changed! You can now login with your new password.';
@@ -156,9 +169,11 @@ function handlePasswordChange(e) {
         oldPasswordInput.value = '';
         newPasswordInput.value = '';
         
-        // If currently logged in, log them out
+        // If currently logged in, log them out after a delay
         if (isLoggedIn) {
-            setTimeout(handleLogout, 2000);
+            setTimeout(() => {
+                handleLogout();
+            }, 2000);
         }
         
     } else {
@@ -170,7 +185,6 @@ function handlePasswordChange(e) {
 }
 
 function handlePriceUpdate(e) {
-    e.preventDefault();
     console.log('=== PRICE UPDATE ATTEMPT ===');
     
     const newPriceInput = document.getElementById('newPrice');
@@ -182,7 +196,7 @@ function handlePriceUpdate(e) {
     }
     
     const newPriceValue = newPriceInput.value.trim();
-    const newPrice = parseInt(newPriceValue);
+    const newPrice = parseFloat(newPriceValue);
     
     console.log('New price input:', newPriceValue);
     console.log('Parsed price:', newPrice);
@@ -190,6 +204,7 @@ function handlePriceUpdate(e) {
     // Clear previous messages
     updateMessage.classList.add('hidden');
     updateMessage.textContent = '';
+    updateMessage.className = '';
     
     // Validate price
     if (isNaN(newPrice) || newPrice <= 0) {
@@ -200,20 +215,28 @@ function handlePriceUpdate(e) {
         return;
     }
     
-    // Update price
-    currentPrice = newPrice;
+    // CRITICAL: Update the current price
+    console.log('Previous price:', currentPrice);
+    currentPrice = Math.round(newPrice); // Round to nearest rupee
+    console.log('New price set to:', currentPrice);
+    
+    // CRITICAL: Update the main price display immediately
     updatePriceDisplay();
+    
+    // CRITICAL: Update timestamp immediately  
     updateTimestamp();
     
-    console.log('Price updated successfully to:', newPrice);
+    console.log('Price and timestamp updated successfully');
     
     // Show success message
-    updateMessage.textContent = `Gold price successfully updated to ₹${newPrice.toLocaleString('en-IN')} per 10gm`;
+    updateMessage.textContent = `Gold price successfully updated to ₹${currentPrice.toLocaleString('en-IN')} per 10gm`;
     updateMessage.className = 'success-message';
     updateMessage.classList.remove('hidden');
     
     // Clear input
     newPriceInput.value = '';
+    
+    console.log('=== PRICE UPDATE COMPLETE ===');
 }
 
 function handleLogout(e) {
@@ -235,6 +258,8 @@ function showAdminPanel() {
         console.log('Admin panel shown, login form hidden');
     } else {
         console.error('Could not find loginForm or adminPanel elements');
+        console.log('loginForm exists:', !!loginForm);
+        console.log('adminPanel exists:', !!adminPanel);
     }
 }
 
@@ -249,6 +274,8 @@ function showLoginForm() {
         console.log('Login form shown, admin panel hidden');
     } else {
         console.error('Could not find loginForm or adminPanel elements');
+        console.log('loginForm exists:', !!loginForm);
+        console.log('adminPanel exists:', !!adminPanel);
     }
 }
 
@@ -275,22 +302,28 @@ function clearAdminPanel() {
     if (updateMessage) {
         updateMessage.classList.add('hidden');
         updateMessage.textContent = '';
+        updateMessage.className = '';
     }
     
     console.log('Admin panel cleared');
 }
 
 function updatePriceDisplay() {
+    console.log('=== UPDATING PRICE DISPLAY ===');
     const priceElement = document.getElementById('currentPrice');
     if (priceElement) {
-        priceElement.textContent = `₹${currentPrice.toLocaleString('en-IN')}`;
-        console.log('Price display updated to:', priceElement.textContent);
+        const formattedPrice = `₹${currentPrice.toLocaleString('en-IN')}`;
+        priceElement.textContent = formattedPrice;
+        console.log('Price display updated to:', formattedPrice);
+        console.log('Price element content is now:', priceElement.textContent);
     } else {
-        console.error('Price element not found');
+        console.error('Price element with ID "currentPrice" not found!');
     }
+    console.log('=== PRICE DISPLAY UPDATE COMPLETE ===');
 }
 
 function updateTimestamp() {
+    console.log('=== UPDATING TIMESTAMP ===');
     const timestampElement = document.getElementById('lastUpdated');
     if (timestampElement) {
         const now = new Date();
@@ -306,7 +339,9 @@ function updateTimestamp() {
         const formattedTime = now.toLocaleDateString('en-IN', options) + ' IST';
         timestampElement.textContent = formattedTime;
         console.log('Timestamp updated to:', formattedTime);
+        console.log('Timestamp element content is now:', timestampElement.textContent);
     } else {
-        console.error('Timestamp element not found');
+        console.error('Timestamp element with ID "lastUpdated" not found!');
     }
+    console.log('=== TIMESTAMP UPDATE COMPLETE ===');
 }
